@@ -9,5 +9,5 @@ postgres/
 .DS_store
 .idea
 
-
+celerybeat-schedule
 
