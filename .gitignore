@@ -1,0 +1,13 @@
+.env
+.production_env
+**/venv
+
+postgres/
+
+**/__pycache__/
+*/mypy_cache
+.DS_store
+.idea
+
+
+

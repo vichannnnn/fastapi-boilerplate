@@ -1,0 +1,38 @@
+alembic==1.7.1
+asyncpg==0.26.0
+fastapi==0.95.0
+fastapi-pagination==0.11.0
+passlib==1.7.4
+python-dotenv==0.21.0
+python-jose==3.3.0
+uvicorn==0.19.0
+sqlalchemy==1.4.45
+pytest==7.2.2
+httpx==0.23.0
+requests==2.28.2
+psycopg
+types-requests
+PyJWT
+
+
+# LINTING
+black
+isort
+pylint==2.13.9
+mypy
+
+# REQUIRED FOR LINTING SQLALCHEMY
+# IGNORE THE FLASK - IT IS COMPATIBLE WITH FASTAPI.
+pylint-flask-sqlalchemy
+sqlalchemy[mypy]
+types-python-jose
+types-passlib
+
+# dev tooling
+faker==15.3.4
+
+# celery
+celery==5.2.7
+psycopg==3.1.8
+psycopg-binary==3.1.8
+redis==4.4.2
