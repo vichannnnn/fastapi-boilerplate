@@ -1,5 +1,12 @@
 # FastAPI Boilerplate
 
+
+[![codecov](https://codecov.io/gh/vichannnnn/fastapi-boilerplate/branch/main/graph/badge.svg)](https://codecov.io/gh/vichannnnn/fastapi-boilerplate)
+[![Python](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/built%20with-Docker-blue)](https://www.docker.com/)
+[![CI](https://github.com/vichannnnn/fastapi-boilerplate/actions/workflows/codecov.yml/badge.svg)](https://github.com/vichannnnn/fastapi-boilerplate/actions)
+
+
 FastAPI Boilerplate is a backend boilerplate to help you get quickly started for projects of any scale without having to set up all the nitty-gritty details. 
 
 The boilerplate contains the following:
