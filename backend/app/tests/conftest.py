@@ -64,6 +64,11 @@ def not_authenticated_client():
     yield TestClient(app)
 
 
+@pytest.fixture(name="test_valid_user", scope="function")
+def test_valid_user():
+    yield schemas.auth.AccountSchema(username="username", password="password")
+
+
 @pytest.fixture(name="test_book_insert", scope="function")
 def test_book_insert():
     yield schemas.core.BookCreateSchema(

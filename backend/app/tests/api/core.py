@@ -30,7 +30,9 @@ def test_get_books(client: TestClient, test_book_insert: schemas.core.BookCreate
     assert response.json()[0]["title"] == test_book_insert.title
 
 
-def test_get_one_book(client: TestClient, test_book_insert: schemas.core.BookCreateSchema):
+def test_get_one_book(
+    client: TestClient, test_book_insert: schemas.core.BookCreateSchema
+):
     book_id = 1
     response = client.get(f"{BOOK_URL}/{book_id}")
     assert response.status_code == status.HTTP_200_OK
@@ -39,7 +41,7 @@ def test_get_one_book(client: TestClient, test_book_insert: schemas.core.BookCre
 
 
 def test_update_book(
-        client: TestClient, test_book_update: schemas.core.BookUpdateSchema
+    client: TestClient, test_book_update: schemas.core.BookUpdateSchema
 ):
     payload = jsonable_encoder(test_book_update)
     book_id = 1
