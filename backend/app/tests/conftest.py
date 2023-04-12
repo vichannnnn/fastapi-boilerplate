@@ -69,3 +69,10 @@ def test_book_insert():
     yield schemas.core.BookCreateSchema(
         title="Testing Book 1", content="This is the content.", pages=2
     )
+
+
+@pytest.fixture(name="test_book_update", scope="function")
+def test_book_update():
+    yield schemas.core.BookUpdateSchema(
+        title="Updated Testing Book 1", content="This is the updated content.", pages=2
+    )
