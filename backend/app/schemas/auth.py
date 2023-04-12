@@ -1,4 +1,5 @@
-from pydantic import BaseModel, constr
+from pydantic import constr
+from app.schemas.base import CustomBaseModel as BaseModel
 
 
 class AccountSchema(BaseModel):

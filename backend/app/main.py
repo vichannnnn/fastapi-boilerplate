@@ -2,7 +2,7 @@ from app.api.api import api_router
 from fastapi import FastAPI
 from fastapi.middleware import cors
 
-app = FastAPI(root_path='/api/v1')
+app = FastAPI(root_path="/api/v1")
 
 app.add_middleware(
     cors.CORSMiddleware,

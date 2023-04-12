@@ -1,5 +1,9 @@
-from fastapi import APIRouter
-from app.tasks.health_check import ping as ping_task
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.deps import get_session
+from app.models.core import Book
+from app.schemas.core import BookCreateSchema, BookUpdateSchema, BookSchema
 
 router = APIRouter()
 
@@ -9,19 +13,43 @@ async def ping():
     return {"status": "ok"}
 
 
-@router.post("/trigger_ping_task")
-async def trigger_ping():
-    task = ping_task.delay()
-    return {"task_id": task.id}
+@router.post("/books", response_model=BookSchema)
+async def create_book(
+    book: BookCreateSchema, session: AsyncSession = Depends(get_session)
+):
+    new_book = await Book.create(session, data=book.dict())
+    return new_book
 
 
-@router.get("/check_ping_task/{task_id}")
-def check_triggered_ping_task(task_id: str):
-    task = ping_task.AsyncResult(task_id)
+@router.get("/books", response_model=List[BookSchema])
+async def read_books(session: AsyncSession = Depends(get_session)):
+    books = await Book.get_all(session)
+    return books
 
-    if task.state == "PENDING":  # pylint: disable=no-else-return
-        return {"status": "pending"}
-    elif task.state == "SUCCESS":
-        return {"status": "success", "result": task.result}
-    else:
-        return {"status": "failure", "error": str(task.result)}
+
+@router.get("/books/{book_id}", response_model=BookSchema)
+async def read_book(book_id: int, session: AsyncSession = Depends(get_session)):
+    book = await Book.read(session, book_id)
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return book
+
+
+@router.put("/books/{book_id}", response_model=BookSchema)
+async def update_book(
+    book_id: int, book: BookUpdateSchema, session: AsyncSession = Depends(get_session)
+):
+    updated_book = await Book.update(
+        session, book_id, data=book.dict(exclude_unset=True)
+    )
+    if not updated_book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return updated_book
+
+
+@router.delete("/books/{book_id}", response_model=BookSchema)
+async def delete_book(book_id: int, session: AsyncSession = Depends(get_session)):
+    deleted_book = await Book.delete(session, book_id)
+    if not deleted_book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return deleted_book

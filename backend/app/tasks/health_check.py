@@ -6,4 +6,3 @@ import requests
 def ping() -> None:
     resp = requests.get("http://backend:8000/ping")
     return resp.json()
-
