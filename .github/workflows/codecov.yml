@@ -32,5 +32,3 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
-      - name: Code Coverage Summary
-        uses: irongut/CodeCoverageSummary@v1.3.0
