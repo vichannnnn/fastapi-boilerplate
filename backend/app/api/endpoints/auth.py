@@ -2,10 +2,10 @@ from app.api.deps import get_session
 from app.exceptions import AppError
 from app.auth_handler import Authenticator
 from app.schemas.auth import AccountSchema
+from app.auth_handler import ALGORITHM, SECRET_KEY
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
-from app.auth_handler import ALGORITHM, SECRET_KEY
 
 router = APIRouter()
 

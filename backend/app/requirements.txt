@@ -30,6 +30,7 @@ types-passlib
 
 # dev tooling
 faker==15.3.4
+coverage
 
 # celery
 celery==5.2.7

@@ -8,9 +8,9 @@ class BookCreateSchema(BaseModel):
 
 
 class BookUpdateSchema(BaseModel):
-    title: str = None
-    content: str = None
-    pages: int = None
+    title: str | None = None
+    content: str | None = None
+    pages: int | None = None
 
 
 class BookSchema(BookCreateSchema):

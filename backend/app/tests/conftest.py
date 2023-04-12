@@ -62,3 +62,10 @@ def test_authentication_client():
 def not_authenticated_client():
     app.dependency_overrides = {get_session: override_session}
     yield TestClient(app)
+
+
+@pytest.fixture(name="test_book_insert", scope="function")
+def test_book_insert():
+    yield schemas.core.BookCreateSchema(
+        title="Testing Book 1", content="This is the content.", pages=2
+    )

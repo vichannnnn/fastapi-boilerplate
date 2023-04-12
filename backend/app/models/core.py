@@ -1,6 +1,6 @@
 from app.db.base_class import Base
-from sqlalchemy import Column, Integer, String
 from app.crud.base import CRUD
+from sqlalchemy import Column, Integer, String
 
 
 class Book(Base, CRUD["Books"]):
