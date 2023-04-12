@@ -17,7 +17,9 @@ runbackend:
 	docker compose -f docker-compose.yml up -d --build
 
 coverage:
-	$(docker_backend) coverage run -m pytest
+	$(docker_backend) coverage run --source=app -m pytest
+	$(docker_backend) coverage xml
+
 
 migrate:
 	$(docker_backend) alembic upgrade head
