@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Copy .env_example to .env
-        run: cp backend/app/.env_example backend/app/.env
+        run: cp .env_example .env
 
       - name: Build Docker image
         run: make runbackend
