@@ -49,7 +49,7 @@ services:
   redis:
     image: redis:7.0.7-alpine
     ports:
-      - "6379:6379"
+      - "6379"
     command: redis-server --loglevel verbose
     restart: unless-stopped
 

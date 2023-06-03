@@ -13,3 +13,9 @@ class AppError:
         detail="Username already exists",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    PASSWORD_MISMATCH_ERROR = HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Password does not match",
+        headers={"WWW-Authenticate": "Bearer"},
+    )

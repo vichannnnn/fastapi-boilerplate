@@ -29,7 +29,7 @@ async def read_books(session: AsyncSession = Depends(get_session)):
 
 @router.get("/books/{book_id}", response_model=BookSchema)
 async def read_book(book_id: int, session: AsyncSession = Depends(get_session)):
-    book = await Book.read(session, book_id)
+    book = await Book.get(session, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book

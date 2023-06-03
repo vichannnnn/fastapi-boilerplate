@@ -1,16 +1,15 @@
 from app.db.base_class import Base
 from app.crud.base import CRUD
-from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Book(Base, CRUD["Books"]):
     __tablename__ = "books"
 
-    id = Column(
-        Integer,
+    id: Mapped[int] = mapped_column(
         primary_key=True,
         index=True,
     )
-    title = Column(String, nullable=False)
-    content = Column(String, nullable=False)
-    pages = Column(Integer, nullable=False)
+    title: Mapped[str] = mapped_column(nullable=False)
+    content: Mapped[str] = mapped_column(nullable=False)
+    pages: Mapped[int] = mapped_column(nullable=False)

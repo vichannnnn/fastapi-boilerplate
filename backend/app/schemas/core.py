@@ -1,5 +1,5 @@
 from app.schemas.base import CustomBaseModel as BaseModel
-
+from typing import Optional
 
 class BookCreateSchema(BaseModel):
     title: str
@@ -8,9 +8,9 @@ class BookCreateSchema(BaseModel):
 
 
 class BookUpdateSchema(BaseModel):
-    title: str | None = None
-    content: str | None = None
-    pages: int | None = None
+    title: Optional[str]
+    content: Optional[str]
+    pages: Optional[int]
 
 
 class BookSchema(BookCreateSchema):

@@ -4,7 +4,6 @@ from app.api.deps import get_session
 from app.main import app
 from app.db.base_class import Base
 
-from app import models
 from app import schemas
 
 from fastapi.testclient import TestClient
@@ -66,7 +65,7 @@ def not_authenticated_client():
 
 @pytest.fixture(name="test_valid_user", scope="function")
 def test_valid_user():
-    yield schemas.auth.AccountSchema(username="username", password="password")
+    yield schemas.auth.AccountSchema(username="ValidUsername", password="ValidPassword123!", repeat_password="ValidPassword123!")
 
 
 @pytest.fixture(name="test_book_insert", scope="function")

@@ -15,7 +15,7 @@ def test_create_valid_user(
     payload = jsonable_encoder(test_valid_user)
     response = client.post(CREATE_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"username": test_valid_user.username}
+    assert response.json() == {"user_id": 1, "username": test_valid_user.username}
 
 
 def test_login(client: TestClient, test_valid_user: schemas.auth.AccountSchema):
@@ -24,4 +24,3 @@ def test_login(client: TestClient, test_valid_user: schemas.auth.AccountSchema):
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["data"]["username"] == test_valid_user.username
-
