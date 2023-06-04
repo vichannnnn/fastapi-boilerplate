@@ -13,7 +13,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 import pytest
 
-
 SQLALCHEMY_DATABASE_URL = PostgresDsn.build(
     scheme="postgresql+asyncpg",
     user="postgres",
@@ -27,7 +26,10 @@ test_engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, echo=True, future=True, poolclass=NullPool
 )
 TestingSessionLocal = sessionmaker(
-    test_engine, autoflush=False, expire_on_commit=False, class_=AsyncSession
+    test_engine,
+    autoflush=False,
+    expire_on_commit=False,
+    class_=AsyncSession,
 )
 
 
@@ -69,6 +71,15 @@ def test_valid_user():
         username="ValidUsername",
         password="ValidPassword123!",
         repeat_password="ValidPassword123!",
+    )
+
+
+@pytest.fixture(name="test_not_repeat_password", scope="function")
+def test_invalid_user():
+    yield schemas.auth.AccountSchema(
+        username="username",
+        password="ValidPassword123!",
+        repeat_password="Clearlyadifferentpassword123!",
     )
 
 

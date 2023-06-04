@@ -84,7 +84,13 @@ class Account(Base, CRUD["Account"]):
         self, session: CurrentSession, data: AccountRegisterSchema
     ) -> CurrentUserSchema:
         self.username = data.username
-        self.password = Authenticator.pwd_context.hash(data.password)
+        self.password = data.password
+        repeat_password = data.repeat_password
+
+        if self.password != repeat_password:
+            raise AppError.PASSWORD_MISMATCH_ERROR
+
+        self.password = Authenticator.pwd_context.hash(self.password)
 
         try:
             session.add(self)

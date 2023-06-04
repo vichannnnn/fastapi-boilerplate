@@ -18,9 +18,6 @@ async def create_account(
     session: CurrentSession,
     data: AccountRegisterSchema,
 ):
-    if data.password != data.repeat_password:
-        raise AppError.PASSWORD_MISMATCH_ERROR
-
     created_user = await Account().register(session, data)
     return created_user
 

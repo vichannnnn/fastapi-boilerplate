@@ -17,4 +17,3 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 CurrentSession = Annotated[AsyncSession, Depends(get_session)]
-
