@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from os import environ
-from typing import Union
+from typing import Union, Annotated
 
 from fastapi import Depends, status
 from fastapi.security import OAuth2PasswordBearer
@@ -9,11 +9,8 @@ from passlib.context import CryptContext
 from sqlalchemy import Index
 from sqlalchemy import exc as SQLAlchemyExceptions
 from sqlalchemy import select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import text
-
-from app.api.deps import get_session
 from app.crud.base import CRUD
 from app.db.base_class import Base
 from app.exceptions import AppError
@@ -22,7 +19,10 @@ from app.schemas.auth import (
     AccountRegisterSchema,
     AccountUpdatePasswordSchema,
     CurrentUserSchema,
+    AuthSchema,
 )
+
+from app.api.deps import CurrentSession
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(environ["ACCESS_TOKEN_EXPIRE_MINUTES"])
@@ -45,8 +45,8 @@ class Authenticator:
     @classmethod
     async def get_current_user(
         cls,
+        session: CurrentSession,
         token: str = Depends(oauth2_scheme),
-        session: AsyncSession = Depends(get_session),
     ) -> CurrentUserSchema:
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
@@ -81,7 +81,7 @@ class Account(Base, CRUD["Account"]):
     password: Mapped[str] = mapped_column(nullable=False)
 
     async def register(
-        self, session: AsyncSession, data: AccountRegisterSchema
+        self, session: CurrentSession, data: AccountRegisterSchema
     ) -> CurrentUserSchema:
         self.username = data.username
         self.password = Authenticator.pwd_context.hash(data.password)
@@ -105,7 +105,7 @@ class Account(Base, CRUD["Account"]):
 
     @classmethod
     async def login(
-        cls, session: AsyncSession, username: str, password: str
+        cls, session: CurrentSession, username: str, password: str
     ) -> Union[CurrentUserSchema, bool]:
         if not (credentials := await Account.select_from_username(session, username)):
             return False
@@ -121,7 +121,7 @@ class Account(Base, CRUD["Account"]):
 
     @classmethod
     async def update_password(
-        cls, session: AsyncSession, user_id: int, data: AccountUpdatePasswordSchema
+        cls, session: CurrentSession, user_id: int, data: AccountUpdatePasswordSchema
     ):
         curr_cred = await Account.get(session, user_id=user_id)
         if not Authenticator.pwd_context.verify(
@@ -154,7 +154,7 @@ class Account(Base, CRUD["Account"]):
         return status.HTTP_204_NO_CONTENT
 
     @classmethod
-    async def select_from_username(cls, session: AsyncSession, username: str):
+    async def select_from_username(cls, session: CurrentSession, username: str):
         try:
             stmt = select(Account).where(Account.username.ilike(username))
             result = await session.execute(stmt)
@@ -164,21 +164,28 @@ class Account(Base, CRUD["Account"]):
             return None
 
     @classmethod
-    async def get(cls: Base, session: AsyncSession, user_id: int):  # pylint: disable=[E0012, W0237]
+    async def get(
+        cls: Base, session: CurrentSession, user_id: int
+    ):  # pylint: disable=[E0012, W0237]
         stmt = select(cls).where(cls.user_id == user_id)
         result = await session.execute(stmt)
         return result.scalar()
 
     @classmethod
-    async def get_all(cls: Base, session: AsyncSession):
+    async def get_all(cls: Base, session: CurrentSession):
         stmt = select(cls).order_by(cls.user_id)
         result = await session.execute(stmt)
         return result.scalars().all()
 
     @classmethod
-    async def update(cls: Base, session: AsyncSession, id: int, data: dict):  # pylint: disable=[W0237, W0622]
+    async def update(
+        cls: Base, session: CurrentSession, id: int, data: dict
+    ):  # pylint: disable=[W0237, W0622]
         stmt = update(cls).returning(cls).where(cls.user_id == id).values(**data)
         res = await session.execute(stmt)
         await session.commit()
         updated_object = res.fetchone()
         return updated_object[0]
+
+
+CurrentUser = Annotated[AuthSchema, Depends(Authenticator.get_current_user)]

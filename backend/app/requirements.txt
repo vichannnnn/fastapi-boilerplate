@@ -1,6 +1,6 @@
 alembic==1.11.1
 asyncpg==0.27.0
-fastapi==0.95.0
+fastapi==0.96.0
 fastapi-pagination==0.12.4
 passlib==1.7.4
 python-dotenv==0.21.0

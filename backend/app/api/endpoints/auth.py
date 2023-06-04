@@ -1,4 +1,3 @@
-from app.api.deps import get_session
 from app.exceptions import AppError
 from app.models.auth import Authenticator, ALGORITHM, SECRET_KEY, Account
 from app.schemas.auth import (
@@ -6,8 +5,9 @@ from app.schemas.auth import (
     CurrentUserSchema,
     AuthSchema,
 )
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.deps import CurrentSession
+from app.models.auth import CurrentUser
+from fastapi import APIRouter
 import jwt
 
 router = APIRouter()
@@ -15,8 +15,8 @@ router = APIRouter()
 
 @router.post("/create")
 async def create_account(
+    session: CurrentSession,
     data: AccountRegisterSchema,
-    session: AsyncSession = Depends(get_session),
 ):
     if data.password != data.repeat_password:
         raise AppError.PASSWORD_MISMATCH_ERROR
@@ -27,16 +27,14 @@ async def create_account(
 
 @router.get("/get", response_model=CurrentUserSchema)
 async def get_account_name(
-    user: AuthSchema = Depends(Authenticator.get_current_user),
+    session: CurrentSession,
+    user: CurrentUser,
 ):
     return user
 
 
 @router.post("/login")
-async def user_login(
-    data: AuthSchema,
-    session: AsyncSession = Depends(get_session),
-):
+async def user_login(session: CurrentSession, data: AuthSchema):
     credentials = await Account.login(session, data.username, data.password)
 
     if not credentials:

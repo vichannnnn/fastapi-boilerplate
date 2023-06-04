@@ -2,7 +2,9 @@ from typing import Optional
 from pydantic import constr
 from app.schemas.base import CustomBaseModel as BaseModel
 
-ValidPassword = constr(regex="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&^])[^\s]{8,20}$")  # pylint: disable=[W1401]
+ValidPassword = constr(
+    regex="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&^])[^\s]{8,20}$"
+)  # pylint: disable=[W1401]
 ValidUsername = constr(regex="^[a-zA-Z0-9]{4,20}$")  # pylint: disable=[W1401]
 
 

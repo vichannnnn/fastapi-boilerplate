@@ -1,8 +1,15 @@
 from app.api.api import api_router
 from fastapi import FastAPI
 from fastapi.middleware import cors
+from contextlib import asynccontextmanager
 
-app = FastAPI(root_path="/api/v1")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+
+
+app = FastAPI(root_path="/api/v1", lifespan=lifespan)
 
 app.add_middleware(
     cors.CORSMiddleware,
@@ -13,13 +20,3 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
-
-
-@app.on_event("startup")
-async def on_startup() -> None:
-    pass
-
-
-@app.on_event("shutdown")
-async def shutdown_event() -> None:
-    pass

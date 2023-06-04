@@ -1,9 +1,8 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.api.deps import get_session
+from fastapi import APIRouter, HTTPException
 from app.models.core import Book
 from app.schemas.core import BookCreateSchema, BookUpdateSchema, BookSchema
+from app.api.deps import CurrentSession
 
 router = APIRouter()
 
@@ -15,20 +14,21 @@ async def ping():
 
 @router.post("/books", response_model=BookSchema)
 async def create_book(
-    book: BookCreateSchema, session: AsyncSession = Depends(get_session)
+    session: CurrentSession,
+    book: BookCreateSchema,
 ):
     new_book = await Book.create(session, data=book.dict())
     return new_book
 
 
 @router.get("/books", response_model=List[BookSchema])
-async def read_books(session: AsyncSession = Depends(get_session)):
+async def read_books(session: CurrentSession):
     books = await Book.get_all(session)
     return books
 
 
 @router.get("/books/{book_id}", response_model=BookSchema)
-async def read_book(book_id: int, session: AsyncSession = Depends(get_session)):
+async def read_book(session: CurrentSession, book_id: int):
     book = await Book.get(session, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -36,9 +36,7 @@ async def read_book(book_id: int, session: AsyncSession = Depends(get_session)):
 
 
 @router.put("/books/{book_id}", response_model=BookSchema)
-async def update_book(
-    book_id: int, book: BookUpdateSchema, session: AsyncSession = Depends(get_session)
-):
+async def update_book(session: CurrentSession, book_id: int, book: BookUpdateSchema):
     updated_book = await Book.update(
         session, book_id, data=book.dict(exclude_unset=True)
     )
@@ -48,7 +46,7 @@ async def update_book(
 
 
 @router.delete("/books/{book_id}", response_model=BookSchema)
-async def delete_book(book_id: int, session: AsyncSession = Depends(get_session)):
+async def delete_book(session: CurrentSession, book_id: int):
     deleted_book = await Book.delete(session, book_id)
     if not deleted_book:
         raise HTTPException(status_code=404, detail="Book not found")
