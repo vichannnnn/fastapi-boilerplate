@@ -1,4 +1,4 @@
-from app.worker import celery_app
+from app.utils.worker import celery_app
 import requests
 
 

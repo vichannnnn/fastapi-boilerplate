@@ -68,9 +68,9 @@ def not_authenticated_client():
 @pytest.fixture(name="test_valid_user", scope="function")
 def test_valid_user():
     yield schemas.auth.AccountSchema(
-        username="ValidUsername",
-        password="ValidPassword123!",
-        repeat_password="ValidPassword123!",
+        username="valid_username",
+        password="valid_password123!",
+        repeat_password="valid_password123!",
     )
 
 
@@ -78,7 +78,7 @@ def test_valid_user():
 def test_invalid_user():
     yield schemas.auth.AccountSchema(
         username="username",
-        password="ValidPassword123!",
+        password="valid_password123!",
         repeat_password="Clearlyadifferentpassword123!",
     )
 

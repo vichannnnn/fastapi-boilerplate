@@ -1,19 +1,20 @@
 alembic==1.11.1
-asyncpg==0.27.0
-fastapi==0.96.0
-fastapi-pagination==0.12.4
+asyncpg==0.28.0
+fastapi==0.100.0
+fastapi-pagination==0.12.5
 passlib==1.7.4
-python-dotenv==0.21.0
+python-dotenv==1.0.0
 python-jose==3.3.0
-uvicorn==0.22.0
-sqlalchemy==2.0.12
-pytest==7.2.2
-httpx==0.23.0
-requests==2.30.0
-pydantic[email]==1.10.8
 python-multipart
-types-requests==2.31.0.0
+pytest==7.4.0
+pydantic==1.10.11
+pydantic[email]==1.10.11
 PyJWT==2.7.0
+uvicorn==0.22.0
+sqlalchemy==2.0.18
+httpx==0.24.1
+requests==2.31.0
+types-requests==2.31.0.1
 
 
 # LINTING

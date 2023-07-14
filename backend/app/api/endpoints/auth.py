@@ -1,19 +1,18 @@
-from app.exceptions import AppError
-from app.models.auth import Authenticator, ALGORITHM, SECRET_KEY, Account
+from app.models.auth import Account
 from app.schemas.auth import (
     AccountRegisterSchema,
     CurrentUserSchema,
     AuthSchema,
+    CurrentUserWithJWTSchema,
 )
-from app.api.deps import CurrentSession
-from app.models.auth import CurrentUser
+from app.api.deps import CurrentSession, CurrentUser
 from fastapi import APIRouter
-import jwt
+
 
 router = APIRouter()
 
 
-@router.post("/create")
+@router.post("/create", response_model=CurrentUserSchema)
 async def create_account(
     session: CurrentSession,
     data: AccountRegisterSchema,
@@ -30,18 +29,7 @@ async def get_account_name(
     return user
 
 
-@router.post("/login")
+@router.post("/login", response_model=CurrentUserWithJWTSchema)
 async def user_login(session: CurrentSession, data: AuthSchema):
-    credentials = await Account.login(session, data.username, data.password)
-
-    if not credentials:
-        raise AppError.INVALID_CREDENTIALS_ERROR
-
-    access_token = Authenticator.create_access_token(data={"sub": data.username})
-    decoded_token = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
-    return {
-        "data": credentials,
-        "access_token": access_token,
-        "token_type": "bearer",
-        "exp": decoded_token["exp"],
-    }
+    res = await Account.login(session, data)
+    return res
