@@ -3,19 +3,15 @@ from fastapi.testclient import TestClient
 from app import schemas
 from fastapi.encoders import jsonable_encoder
 
-PING_URL = "/ping"
-BOOK_URL = "/books"
+BOOK_URL = "/book"
+BOOKS_URL = "/books"
 
 
-def test_example(client: TestClient):
-    response = client.get(PING_URL)
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"status": "ok"}
-
-
-def test_add_book(client: TestClient, test_book_insert: schemas.core.BookCreateSchema):
+def test_add_book(
+    test_client: TestClient, test_book_insert: schemas.core.BookCreateSchema
+):
     payload = jsonable_encoder(test_book_insert)
-    response = client.post(BOOK_URL, json=payload)
+    response = test_client.post(BOOK_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["id"] == 1
     assert response.json()["title"] == test_book_insert.title
@@ -23,29 +19,42 @@ def test_add_book(client: TestClient, test_book_insert: schemas.core.BookCreateS
     assert response.json()["pages"] == test_book_insert.pages
 
 
-def test_get_books(client: TestClient, test_book_insert: schemas.core.BookCreateSchema):
-    response = client.get(BOOK_URL)
+def test_get_books(
+    test_client: TestClient, test_book_insert: schemas.core.BookCreateSchema
+):
+    payload = jsonable_encoder(test_book_insert)
+    response = test_client.post(BOOK_URL, json=payload)
+    assert response.status_code == status.HTTP_200_OK
+    response = test_client.get(BOOKS_URL)
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 1
     assert response.json()[0]["title"] == test_book_insert.title
 
 
 def test_get_one_book(
-    client: TestClient, test_book_insert: schemas.core.BookCreateSchema
+    test_client: TestClient, test_book_insert: schemas.core.BookCreateSchema
 ):
+    payload = jsonable_encoder(test_book_insert)
+    response = test_client.post(BOOK_URL, json=payload)
+    assert response.status_code == status.HTTP_200_OK
     book_id = 1
-    response = client.get(f"{BOOK_URL}/{book_id}")
+    response = test_client.get(BOOK_URL + "/" + str(book_id))
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["id"] == book_id
     assert response.json()["title"] == test_book_insert.title
 
 
 def test_update_book(
-    client: TestClient, test_book_update: schemas.core.BookUpdateSchema
+    test_client: TestClient,
+    test_book_insert: schemas.core.BookCreateSchema,
+    test_book_update: schemas.core.BookUpdateSchema,
 ):
+    payload = jsonable_encoder(test_book_insert)
+    response = test_client.post(BOOK_URL, json=payload)
+    assert response.status_code == status.HTTP_200_OK
     payload = jsonable_encoder(test_book_update)
     book_id = 1
-    response = client.put(f"{BOOK_URL}/{book_id}", json=payload)
+    response = test_client.put(BOOK_URL + "/" + str(book_id), json=payload)
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["id"] == 1
     assert response.json()["title"] == test_book_update.title
@@ -53,11 +62,16 @@ def test_update_book(
     assert response.json()["pages"] == test_book_update.pages
 
 
-def test_delete_book(client: TestClient):
-    exist_book_id = 1
-    response = client.delete(f"{BOOK_URL}/{exist_book_id}")
+def test_delete_book(test_client: TestClient,test_book_insert: schemas.core.BookCreateSchema,):
+
+    payload = jsonable_encoder(test_book_insert)
+    response = test_client.post(BOOK_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
 
+    exist_book_id = 1
+    response = test_client.delete(BOOK_URL + "/" + str(exist_book_id))
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
     does_not_exist_id = 2
-    response = client.delete(f"{BOOK_URL}/{does_not_exist_id}")
+    response = test_client.delete(BOOK_URL + "/" + str(does_not_exist_id))
     assert response.status_code == status.HTTP_404_NOT_FOUND

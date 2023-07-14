@@ -44,5 +44,5 @@ check: pylint \
 	tests \
 
 tests:
-	$(docker_backend) pytest ./app/tests -x -vv
+	docker compose run --rm -e TESTING=true $(backend_container) pytest ./app/tests -x -vv
 

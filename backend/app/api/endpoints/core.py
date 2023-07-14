@@ -8,7 +8,7 @@ router = APIRouter()
 books_router = APIRouter()
 
 
-@router.post("/", response_model=BookSchema)
+@router.post("", response_model=BookSchema)
 async def create_book(
     session: CurrentSession,
     book: BookCreateSchema,
@@ -17,7 +17,7 @@ async def create_book(
     return new_book
 
 
-@books_router.get("/", response_model=List[BookSchema])
+@books_router.get("", response_model=List[BookSchema])
 async def read_books(session: CurrentSession):
     books = await Book.get_all(session)
     return books
