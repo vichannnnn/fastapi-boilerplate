@@ -4,7 +4,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-
+from typing import Dict, Any
 from app.utils.exceptions import AppError
 
 
@@ -18,7 +18,7 @@ class Authenticator:
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
     @classmethod
-    def create_access_token(cls, data: dict):
+    def create_access_token(cls, data: Dict[str, Any]) -> str:
         expiry = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         expiry_timestamp = int(expiry.timestamp())
         return jwt.encode(
@@ -26,7 +26,7 @@ class Authenticator:
         )
 
     @classmethod
-    async def verify(cls, token: str = Depends(oauth2_scheme)):
+    async def verify(cls, token: str = Depends(oauth2_scheme)) -> bool:
         try:
             jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
             return True

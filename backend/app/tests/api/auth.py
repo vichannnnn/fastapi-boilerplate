@@ -10,7 +10,7 @@ LOGIN_URL = "/auth/login"
 
 def test_create_valid_user(
     test_client: TestClient, test_valid_user: schemas.auth.AccountSchema
-):
+) -> None:
     payload = jsonable_encoder(test_valid_user)
     response = test_client.post(CREATE_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
@@ -19,13 +19,15 @@ def test_create_valid_user(
 
 def test_fail_repeat_password(
     test_client: TestClient, test_not_repeat_password: schemas.auth.AccountSchema
-):
+) -> None:
     payload = jsonable_encoder(test_not_repeat_password)
     response = test_client.post(CREATE_URL, json=payload)
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_login(test_client: TestClient, test_valid_user: schemas.auth.AccountSchema):
+def test_login(
+    test_client: TestClient, test_valid_user: schemas.auth.AccountSchema
+) -> None:
     payload = jsonable_encoder(test_valid_user)
     response = test_client.post(CREATE_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK

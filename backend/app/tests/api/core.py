@@ -9,7 +9,7 @@ BOOKS_URL = "/books"
 
 def test_add_book(
     test_client: TestClient, test_book_insert: schemas.core.BookCreateSchema
-):
+) -> None:
     payload = jsonable_encoder(test_book_insert)
     response = test_client.post(BOOK_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
@@ -21,7 +21,7 @@ def test_add_book(
 
 def test_get_books(
     test_client: TestClient, test_book_insert: schemas.core.BookCreateSchema
-):
+) -> None:
     payload = jsonable_encoder(test_book_insert)
     response = test_client.post(BOOK_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
@@ -33,7 +33,7 @@ def test_get_books(
 
 def test_get_one_book(
     test_client: TestClient, test_book_insert: schemas.core.BookCreateSchema
-):
+) -> None:
     payload = jsonable_encoder(test_book_insert)
     response = test_client.post(BOOK_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
@@ -48,7 +48,7 @@ def test_update_book(
     test_client: TestClient,
     test_book_insert: schemas.core.BookCreateSchema,
     test_book_update: schemas.core.BookUpdateSchema,
-):
+) -> None:
     payload = jsonable_encoder(test_book_insert)
     response = test_client.post(BOOK_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK
@@ -62,8 +62,10 @@ def test_update_book(
     assert response.json()["pages"] == test_book_update.pages
 
 
-def test_delete_book(test_client: TestClient,test_book_insert: schemas.core.BookCreateSchema,):
-
+def test_delete_book(
+    test_client: TestClient,
+    test_book_insert: schemas.core.BookCreateSchema,
+) -> None:
     payload = jsonable_encoder(test_book_insert)
     response = test_client.post(BOOK_URL, json=payload)
     assert response.status_code == status.HTTP_200_OK

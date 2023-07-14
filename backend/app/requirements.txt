@@ -26,6 +26,7 @@ mypy==1.3.0
 
 # REQUIRED FOR LINTING SQLALCHEMY
 # IGNORE THE FLASK - IT IS COMPATIBLE WITH FASTAPI.
+
 pylint-flask-sqlalchemy
 sqlalchemy[mypy]
 types-python-jose

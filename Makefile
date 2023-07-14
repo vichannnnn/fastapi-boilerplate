@@ -37,7 +37,7 @@ pylint:
 	$(docker_backend) pylint ./app --disable=C0114,C0115,C0116,R0903,R0913,C0411 --extension-pkg-whitelist=pydantic --load-plugins pylint_flask_sqlalchemy
 
 mypy:
-	$(docker_backend) mypy ./app --install-types
+	$(docker_backend) mypy ./app --install-types --strict
 
 check: pylint \
 	mypy \

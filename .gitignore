@@ -1,5 +1,6 @@
 .env
 .production_env
+.production.env
 **/venv
 
 postgres/

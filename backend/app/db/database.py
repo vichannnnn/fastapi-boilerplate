@@ -1,4 +1,4 @@
-from os import environ
+import os
 from pydantic import PostgresDsn
 
 from sqlalchemy import create_engine
@@ -6,23 +6,23 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-DATABASE_URL = environ["DATABASE_URL"]
-TESTING = environ.get("TESTING")
+DATABASE_URL = os.environ["DATABASE_URL"]
+TESTING = os.environ.get("TESTING")
 
 SQLALCHEMY_DATABASE_URL = PostgresDsn.build(
     scheme="postgresql+asyncpg",
-    user=environ["POSTGRES_USER"] if not TESTING else "postgres",
-    password=environ["POSTGRES_PASSWORD"] if not TESTING else "postgres",
-    host=environ["POSTGRES_HOST"],
+    user=os.environ["POSTGRES_USER"] if not TESTING else "postgres",
+    password=os.environ["POSTGRES_PASSWORD"] if not TESTING else "postgres",
+    host=os.environ["POSTGRES_HOST"],
     port="5432",
-    path="/" + environ["POSTGRES_DB"] if not TESTING else "/test",
+    path="/" + os.environ["POSTGRES_DB"] if not TESTING else "/test",
 )
 
 SQLALCHEMY_DATABASE_URL_WITHOUT_DB = PostgresDsn.build(
     scheme="postgresql+asyncpg",
-    user=environ["POSTGRES_USER"] if not TESTING else "postgres",
-    password=environ["POSTGRES_PASSWORD"] if not TESTING else "postgres",
-    host=environ["POSTGRES_HOST"],
+    user=os.environ["POSTGRES_USER"] if not TESTING else "postgres",
+    password=os.environ["POSTGRES_PASSWORD"] if not TESTING else "postgres",
+    host=os.environ["POSTGRES_HOST"],
     port="5432",
 )
 

@@ -1,5 +1,6 @@
 import asyncio
-from typing import AsyncGenerator
+from asyncio import AbstractEventLoop
+from typing import AsyncGenerator, Generator
 from app.api.deps import get_session, get_current_user
 from app.main import app
 from app.db.base_class import Base
@@ -17,12 +18,12 @@ import pytest
 
 
 @pytest.fixture(scope="session")
-def event_loop():
+def event_loop() -> AbstractEventLoop:
     return asyncio.get_event_loop()
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def create_test_database():
+async def create_test_database() -> AsyncGenerator[None, None]:
     postgres_engine = create_async_engine(SQLALCHEMY_DATABASE_URL_WITHOUT_DB)
 
     async with postgres_engine.connect() as conn:
@@ -41,7 +42,7 @@ async def create_test_database():
 
 
 @pytest.fixture(scope="function", autouse=True)
-async def init_models(event_loop):
+async def init_models(event_loop: AbstractEventLoop) -> None:
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
@@ -57,24 +58,24 @@ async def override_session() -> AsyncGenerator[AsyncSession, None]:
         await session.close()
 
 
-async def override_get_current_user():
+async def override_get_current_user() -> schemas.auth.CurrentUserSchema:
     return schemas.auth.CurrentUserSchema(user_id=1, username="testuser")
 
 
 @pytest.fixture(name="test_client")
-def test_client():
+def test_client() -> Generator[TestClient, None, None]:
     yield TestClient(app)
 
 
 @pytest.fixture(name="test_logged_in_client")
-def test_logged_in_client():
+def test_logged_in_client() -> Generator[TestClient, None, None]:
     app.dependency_overrides[get_current_user] = override_get_current_user
     yield TestClient(app)
     app.dependency_overrides = {}
 
 
 @pytest.fixture(name="test_valid_user")
-def test_valid_user():
+def test_valid_user() -> Generator[schemas.auth.AccountRegisterSchema, None, None]:
     yield schemas.auth.AccountRegisterSchema(
         username="validusername",
         password="validpassword123!",
@@ -83,7 +84,7 @@ def test_valid_user():
 
 
 @pytest.fixture(name="test_not_repeat_password")
-def test_invalid_user():
+def test_invalid_user() -> Generator[schemas.auth.AccountSchema, None, None]:
     yield schemas.auth.AccountSchema(
         username="username",
         password="valid_password123!",
@@ -92,14 +93,14 @@ def test_invalid_user():
 
 
 @pytest.fixture(name="test_book_insert")
-def test_book_insert():
+def test_book_insert() -> Generator[schemas.core.BookCreateSchema, None, None]:
     yield schemas.core.BookCreateSchema(
         title="Testing Book 1", content="This is the content.", pages=2
     )
 
 
 @pytest.fixture(name="test_book_update")
-def test_book_update():
+def test_book_update() -> Generator[schemas.core.BookUpdateSchema, None, None]:
     yield schemas.core.BookUpdateSchema(
         title="Updated Testing Book 1", content="This is the updated content.", pages=2
     )

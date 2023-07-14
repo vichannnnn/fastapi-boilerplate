@@ -1,6 +1,6 @@
 from typing import AsyncGenerator, Generator
 from app.db.database import SessionLocal, async_session
-from app.schemas.auth import AuthSchema, CurrentUserSchema
+from app.schemas.auth import CurrentUserSchema
 from app.models.auth import Account
 from app.utils.auth import Authenticator, ALGORITHM, SECRET_KEY
 from app.utils.exceptions import AppError
@@ -42,4 +42,4 @@ async def get_current_user(
     raise AppError.INVALID_CREDENTIALS_ERROR
 
 
-CurrentUser = Annotated[AuthSchema, Depends(get_current_user)]
+CurrentUser = Annotated[CurrentUserSchema, Depends(get_current_user)]

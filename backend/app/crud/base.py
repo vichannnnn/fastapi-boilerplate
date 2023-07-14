@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Optional, Sequence, Type
+from typing import TypeVar, Generic, Optional, Sequence, Type, Dict, Any
 from fastapi import Response as FastAPIResponse
 from sqlalchemy import update, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,13 +12,13 @@ ModelType = TypeVar("ModelType", bound=Base)
 
 
 class CRUD(Generic[ModelType]):
-    @declared_attr
+    @declared_attr  # type: ignore
     def __tablename__(self) -> str:
         return self.__class__.__name__.lower()
 
     @classmethod
-    async def create(
-        cls: Type[ModelType], session: AsyncSession, data: dict
+    async def create(  # type: ignore
+        cls: Type[ModelType], session: AsyncSession, data: Dict[str, Any]
     ) -> ModelType:
         try:
             obj = cls(**data)
@@ -35,7 +35,7 @@ class CRUD(Generic[ModelType]):
         return obj
 
     @classmethod
-    async def get(cls: Type[ModelType], session: AsyncSession, id: int) -> ModelType:
+    async def get(cls: Type[ModelType], session: AsyncSession, id: int) -> ModelType:  # type: ignore
         stmt = select(cls).where(cls.id == id)
         result = await session.execute(stmt)
         instance = result.scalar()
@@ -45,8 +45,8 @@ class CRUD(Generic[ModelType]):
         return instance
 
     @classmethod
-    async def update(
-        cls: Type[ModelType], session: AsyncSession, id: int, data: dict
+    async def update(  # type: ignore
+        cls: Type[ModelType], session: AsyncSession, id: int, data: Dict[str, Any]
     ) -> ModelType:
         stmt = update(cls).returning(cls).where(cls.id == id).values(**data)
         res = await session.execute(stmt)
@@ -59,7 +59,7 @@ class CRUD(Generic[ModelType]):
         return updated_instance
 
     @classmethod
-    async def delete(
+    async def delete(  # type: ignore
         cls: Type[ModelType], session: AsyncSession, id: int
     ) -> FastAPIResponse:
         stmt = delete(cls).returning(cls).where(cls.id == id)
@@ -73,8 +73,10 @@ class CRUD(Generic[ModelType]):
         return FastAPIResponse(status_code=204)
 
     @classmethod
-    async def get_all(
-        cls: Base, session: AsyncSession, filter_: Optional[dict] = None
+    async def get_all(  # type: ignore
+        cls: Type[ModelType],
+        session: AsyncSession,
+        filter_: Optional[Dict[str, Any]] = None,
     ) -> Sequence[ModelType]:
         stmt = select(cls)
         if filter_:
