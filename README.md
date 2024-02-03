@@ -36,8 +36,8 @@ secret_key = secrets.token_hex(32)
 - Run the following command 
 
 ```
-touch .env
-# Copy the content from .env_example into .env and edit based on your own needs.
+cp .env.example .env
+# Copy the content from .env.example into .env and edit based on your own needs.
 
 make runbackend
 make migrations name="init"
