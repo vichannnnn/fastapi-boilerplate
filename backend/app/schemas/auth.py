@@ -1,14 +1,20 @@
-from typing import Optional
-from pydantic import constr
+from typing import Optional, Annotated
+from pydantic import constr, StringConstraints, ConfigDict
 from app.schemas.base import CustomBaseModel as BaseModel
 
-valid_username = constr(regex="^[a-zA-Z0-9]{4,20}$")  # pylint: disable=[W1401, C0103]
-valid_password = constr(  # pylint: disable=[C0103]
-    regex="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&^])[^\s]{8,20}$"  # pylint: disable=[W1401]
-)
+valid_username = Annotated[
+    str, StringConstraints(strip_whitespace=True, pattern="^[a-zA-Z0-9]{4," "20}$")
+]
+valid_password = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True, pattern=r"^(?=.*[A-Z])(?=.*\W)[^\s]{8,20}$"
+    ),
+]
 
 
 class AccountRegisterSchema(BaseModel):
+    model_config = ConfigDict(regex_engine="python-re")
     username: valid_username  # type: ignore
     password: valid_password  # type: ignore
     repeat_password: valid_password  # type: ignore

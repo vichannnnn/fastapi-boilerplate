@@ -24,7 +24,7 @@ def event_loop() -> AbstractEventLoop:
 
 @pytest.fixture(scope="session", autouse=True)
 async def create_test_database() -> AsyncGenerator[None, None]:
-    postgres_engine = create_async_engine(SQLALCHEMY_DATABASE_URL_WITHOUT_DB)
+    postgres_engine = create_async_engine(str(SQLALCHEMY_DATABASE_URL_WITHOUT_DB))
 
     async with postgres_engine.connect() as conn:
         await conn.execute(text("COMMIT"))
@@ -78,17 +78,8 @@ def test_logged_in_client() -> Generator[TestClient, None, None]:
 def test_valid_user() -> Generator[schemas.auth.AccountRegisterSchema, None, None]:
     yield schemas.auth.AccountRegisterSchema(
         username="validusername",
-        password="validpassword123!",
-        repeat_password="validpassword123!",
-    )
-
-
-@pytest.fixture(name="test_not_repeat_password")
-def test_invalid_user() -> Generator[schemas.auth.AccountSchema, None, None]:
-    yield schemas.auth.AccountSchema(
-        username="username",
-        password="valid_password123!",
-        repeat_password="Clearlyadifferentpassword123!",
+        password="Validpassword123!",
+        repeat_password="Validpassword123!",
     )
 
 
