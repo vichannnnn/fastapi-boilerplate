@@ -38,7 +38,7 @@ coverage
 
 # celery
 celery==5.3.6
-psycopg==3.1.8
-psycopg-binary==3.1.8
+psycopg==3.1.17
+psycopg-binary==3.1.17
 redis==4.5.5
 

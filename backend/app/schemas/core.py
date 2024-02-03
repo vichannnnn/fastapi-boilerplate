@@ -7,6 +7,18 @@ class BookCreateSchema(BaseModel):
     content: str
     pages: int
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "title": "Book Title",
+                    "content": "This is the content of a book.",
+                    "pages": 5,
+                }
+            ]
+        }
+    }
+
 
 class BookUpdateSchema(BaseModel):
     title: Optional[str]
