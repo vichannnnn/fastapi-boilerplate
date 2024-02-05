@@ -1,5 +1,5 @@
-from typing import List, Sequence, Annotated
-from fastapi import APIRouter, Response as FastAPIResponse, Body
+from typing import List, Sequence
+from fastapi import APIRouter, Response as FastAPIResponse
 from app.models.core import Book
 from app.schemas.core import (
     BookCreateSchema,
@@ -7,6 +7,7 @@ from app.schemas.core import (
     BookSchema,
 )
 from app.api.deps import CurrentSession
+
 
 router = APIRouter()
 books_router = APIRouter()

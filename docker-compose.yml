@@ -1,11 +1,22 @@
----
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: 'http://localhost:3100/api/prom/push'
+    loki-pipeline-stages: |
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}'
+          max_wait_time: 3s
+      - regex:
+          expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},d{3}) (?P<message>(?s:.*))$$'
+
+
 version: '3.8'
 
 services:
   backend:
     container_name: backend
     build: ./backend
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --log-config app/logging_config.json --reload
     networks:
       - internal-network
       - default
@@ -24,6 +35,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./backend:/app
+    logging: *default-logging
+    depends_on:
+      - loki
 
   db:
     networks:
@@ -106,9 +120,58 @@ services:
        - caddy_data:/data
        - caddy_config:/config
 
+  loki:
+    image: grafana/loki:2.9.3
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+
+
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./backend/etc/prometheus:/workspace
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/workspace/prometheus.yml
+      - --enable-feature=exemplar-storage
+    depends_on:
+      - loki
+    logging: *default-logging
+
+
+  tempo:
+    image: grafana/tempo:2.3.1
+    command: [ "--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  grafana:
+    image: grafana/grafana:10.2.3
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./backend/etc/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./backend/etc/dashboards:/etc/grafana/dashboards
+    depends_on:
+      - loki
+      - prometheus
+    logging: *default-logging
+
 volumes:
   caddy_config: null
   caddy_data: null
+  prometheus_data: {}
+  loki_data: {}
 
 networks:
   internal-network:
