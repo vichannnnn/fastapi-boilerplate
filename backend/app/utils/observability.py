@@ -19,12 +19,42 @@ from starlette.responses import Response
 from starlette.routing import Match
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 from starlette.types import ASGIApp
-
+from logging.handlers import QueueListener
 import logging
+import queue
 
+# Create the log queue
+log_queue = queue.Queue(-1)
 
-logger = logging.getLogger("uvicorn.access")
+# Create formatters
+default_formatter = logging.Formatter("%(levelname)s %(message)s")
+access_formatter = logging.Formatter(
+    "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] [trace_id=%(otelTraceID)s span_id=%(otelSpanID)s resource.service.name=%(otelServiceName)s] - %(message)s")
 
+# Create handlers
+stream_handler_default = logging.StreamHandler()
+stream_handler_default.setFormatter(default_formatter)
+stream_handler_access = logging.StreamHandler()
+stream_handler_access.setFormatter(access_formatter)
+
+queue_handler = logging.handlers.QueueHandler(log_queue)
+
+# Configure uvicorn loggers
+uvicorn_logger = logging.getLogger("uvicorn")
+uvicorn_logger.setLevel(logging.INFO)
+uvicorn_logger.addHandler(queue_handler)
+
+uvicorn_error_logger = logging.getLogger("uvicorn.error")
+uvicorn_error_logger.setLevel(logging.INFO)
+uvicorn_error_logger.addHandler(queue_handler)
+
+uvicorn_access_logger = logging.getLogger("uvicorn.access")
+uvicorn_access_logger.setLevel(logging.INFO)
+uvicorn_access_logger.addHandler(queue_handler)
+uvicorn_access_logger.propagate = False
+
+queue_listener = QueueListener(log_queue, stream_handler_default, stream_handler_access)
+queue_listener.start()
 
 INFO = Gauge("fastapi_app_info", "FastAPI application information.", ["app_name"])
 REQUESTS = Counter(
@@ -61,7 +91,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         INFO.labels(app_name=self.app_name).inc()
 
     async def dispatch(
-        self, request: Request, call_next: RequestResponseEndpoint
+            self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
         method = request.method
         path, is_handled_path = self.get_path(request)
@@ -125,7 +155,7 @@ def metrics(request: Request) -> Response:
 
 
 def setting_otlp(
-    app: ASGIApp, app_name: str, endpoint: str, log_correlation: bool = True
+        app: ASGIApp, app_name: str, endpoint: str, log_correlation: bool = True
 ) -> None:
     # Setting OpenTelemetry
     # set the service name to show in traces

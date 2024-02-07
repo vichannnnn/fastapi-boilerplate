@@ -5,7 +5,7 @@ import logging
 from app.api.api import api_router
 from fastapi import FastAPI, Request
 from fastapi.middleware import cors
-from app.observability import PrometheusMiddleware, metrics, setting_otlp, logger
+from app.utils.observability import PrometheusMiddleware, metrics, setting_otlp, uvicorn_logger
 
 
 APP_NAME = os.environ.get("APP_NAME", "backend")
@@ -30,7 +30,7 @@ class LoggingMiddleware:
             "response_status": response.status_code,
             "process_time_ms": process_time_str,
         }
-        logger.info(json.dumps(log_data))
+        uvicorn_logger.info(json.dumps(log_data))
         return response
 
 
@@ -67,5 +67,4 @@ class EndpointFilter(logging.Filter):
         return record.getMessage().find("GET /metrics") == -1
 
 
-# Filter out /endpoint
 logging.getLogger("uvicorn.access").addFilter(EndpointFilter())
