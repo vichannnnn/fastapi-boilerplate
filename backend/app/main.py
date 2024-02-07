@@ -1,17 +1,16 @@
 import os
-import logging
 import time
 import json
+import logging
 from app.api.api import api_router
 from fastapi import FastAPI, Request
 from fastapi.middleware import cors
-from app.observability import PrometheusMiddleware, metrics, setting_otlp
+from app.observability import PrometheusMiddleware, metrics, setting_otlp, logger
 
 
 APP_NAME = os.environ.get("APP_NAME", "backend")
 EXPOSE_PORT = os.environ.get("EXPOSE_PORT", 8000)
 OTLP_GRPC_ENDPOINT = os.environ.get("OTLP_GRPC_ENDPOINT", "http://tempo:4317")
-logger = logging.getLogger(__name__)
 
 
 class LoggingMiddleware:
@@ -20,7 +19,9 @@ class LoggingMiddleware:
         start_time = time.time()
         response = await call_next(request)
         process_time_seconds = time.time() - start_time
-        process_time_ms = round(process_time_seconds * 1000, 6)  # Convert to milliseconds and round to 6 decimal places
+        process_time_ms = round(
+            process_time_seconds * 1000, 6
+        )  # Convert to milliseconds and round to 6 decimal places
         process_time_str = f"{process_time_ms} ms"
 
         log_data = {

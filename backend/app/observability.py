@@ -20,12 +20,10 @@ from starlette.routing import Match
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 from starlette.types import ASGIApp
 
-import json
 import logging
-from fastapi import Request as FastAPIRequest
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("uvicorn.access")
 
 
 INFO = Gauge("fastapi_app_info", "FastAPI application information.", ["app_name"])
@@ -145,48 +143,3 @@ def setting_otlp(
         LoggingInstrumentor().instrument(set_logging_format=True)
 
     FastAPIInstrumentor.instrument_app(app, tracer_provider=tracer)
-
-
-def log_endpoint(func):
-    async def wrapper(*args, **kwargs):
-        # args[0] is typically the 'self' reference for instance methods
-        # For FastAPI, it's often the 'request' object
-
-        logging.error("Hello")
-        request = None
-        for arg in args:
-            if isinstance(arg, FastAPIRequest):
-                request = arg
-                break
-
-        try:
-            # Call the actual endpoint function
-            response = await func(*args, **kwargs)
-
-            # Log request and response details
-            log_data = {
-                "message": "Endpoint called",
-                "endpoint": request.url.path if request else "Unknown",
-                "method": request.method if request else "Unknown",
-                "status_code": response.status_code
-                if isinstance(response, Response)
-                else "Unknown",
-                # Add more details as needed
-            }
-            logger.info(json.dumps(log_data))
-            return response
-        except Exception as e:
-            # Log the exception details
-            logger.error(
-                json.dumps(
-                    {
-                        "message": "Error in endpoint",
-                        "endpoint": request.url.path if request else "Unknown",
-                        "error": str(e),
-                        # Add more details as needed
-                    }
-                )
-            )
-            raise
-
-    return wrapper
