@@ -127,6 +127,7 @@ services:
       - "3100:3100"
     volumes:
       - loki_data:/loki
+    restart: unless-stopped
 
 
   prometheus:
@@ -142,6 +143,7 @@ services:
     depends_on:
       - loki
     logging: *default-logging
+    restart: unless-stopped
 
 
   tempo:
@@ -153,6 +155,7 @@ services:
     depends_on:
       - loki
     logging: *default-logging
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:10.2.3
@@ -166,6 +169,7 @@ services:
       - loki
       - prometheus
     logging: *default-logging
+    restart: unless-stopped
 
 volumes:
   caddy_config: null
