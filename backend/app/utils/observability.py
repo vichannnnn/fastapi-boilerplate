@@ -29,7 +29,8 @@ log_queue = queue.Queue(-1)
 # Create formatters
 default_formatter = logging.Formatter("%(levelname)s %(message)s")
 access_formatter = logging.Formatter(
-    "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] [trace_id=%(otelTraceID)s span_id=%(otelSpanID)s resource.service.name=%(otelServiceName)s] - %(message)s")
+    "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] [trace_id=%(otelTraceID)s span_id=%(otelSpanID)s "
+    "resource.service.name=%(otelServiceName)s] - %(message)s")
 
 # Create handlers
 stream_handler_default = logging.StreamHandler()
