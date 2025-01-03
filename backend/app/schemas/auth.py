@@ -1,7 +1,9 @@
-from typing import Optional, Annotated
-from pydantic import StringConstraints, ConfigDict
-from app.schemas.base import CustomBaseModel as BaseModel
 import re
+from typing import Annotated, Optional
+
+from pydantic import ConfigDict, StringConstraints
+
+from app.schemas.base import CustomBaseModel as BaseModel
 
 valid_username = Annotated[
     str,

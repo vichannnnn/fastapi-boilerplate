@@ -1,6 +1,7 @@
 import inspect as _inspect
-from .core import *
+
 from .auth import *
+from .core import *
 
 # This following code is used to prevent hidden local variables
 # (variables starting with _) from being exported by this module.

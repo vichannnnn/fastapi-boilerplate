@@ -1,6 +1,7 @@
 from fastapi import status
-from fastapi.testclient import TestClient
 from fastapi.encoders import jsonable_encoder
+from fastapi.testclient import TestClient
+
 from app import schemas
 
 CREATE_URL = "/auth/create"

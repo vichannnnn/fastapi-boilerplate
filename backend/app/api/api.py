@@ -1,5 +1,6 @@
-from app.api.endpoints import core, example, auth, tasks
 from fastapi import APIRouter
+
+from app.api.endpoints import auth, core, example, tasks
 
 api_router = APIRouter()
 api_router.include_router(example.router, tags=["Example"])

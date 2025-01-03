@@ -1,12 +1,13 @@
+from fastapi import APIRouter
+
+from app.api.deps import CurrentSession, CurrentUser
 from app.models.auth import Account
 from app.schemas.auth import (
     AccountRegisterSchema,
-    CurrentUserSchema,
     AuthSchema,
+    CurrentUserSchema,
     CurrentUserWithJWTSchema,
 )
-from app.api.deps import CurrentSession, CurrentUser
-from fastapi import APIRouter
 
 router = APIRouter()
 

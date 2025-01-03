@@ -1,6 +1,7 @@
-from app.api.api import api_router
 from fastapi import FastAPI
 from fastapi.middleware import cors
+
+from app.api.api import api_router
 
 app = FastAPI(
     title="FastAPI Boilerplate Microservice",

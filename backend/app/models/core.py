@@ -1,6 +1,7 @@
-from app.db.base_class import Base
-from app.crud.base import CRUD
 from sqlalchemy.orm import Mapped, mapped_column, synonym
+
+from app.crud.base import CRUD
+from app.db.base_class import Base
 
 
 class Book(Base, CRUD["Book"]):

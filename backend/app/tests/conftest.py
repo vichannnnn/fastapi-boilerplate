@@ -1,20 +1,26 @@
 import asyncio
 from asyncio import AbstractEventLoop
 from typing import AsyncGenerator, Generator
-from app.api.deps import get_session, get_current_user
-from app.main import app
-from app.db.base_class import Base
-from app.db.database import (
-    engine as test_engine,
-    async_session as TestingSessionLocal,
-    SQLALCHEMY_DATABASE_URL_WITHOUT_DB,
-)
-from app import schemas
+
+import pytest
+import sqlalchemy.exc as SQLAlchemyExceptions
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-import sqlalchemy.exc as SQLAlchemyExceptions
-import pytest
+
+from app import schemas
+from app.api.deps import get_current_user, get_session
+from app.db.base_class import Base
+from app.db.database import (
+    SQLALCHEMY_DATABASE_URL_WITHOUT_DB,
+)
+from app.db.database import (
+    async_session as TestingSessionLocal,
+)
+from app.db.database import (
+    engine as test_engine,
+)
+from app.main import app
 
 
 @pytest.fixture(scope="session")

@@ -1,12 +1,12 @@
-from typing import TypeVar, Generic, Optional, Sequence, Type, Dict, Any
-from fastapi import Response as FastAPIResponse
-from sqlalchemy import update, delete, select
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import declared_attr
-from sqlalchemy import exc as SQLAlchemyExceptions, and_
+from typing import Any, Dict, Generic, Optional, Sequence, Type, TypeVar
 
 from app.db.base_class import Base
 from app.utils.exceptions import AppError
+from fastapi import Response as FastAPIResponse
+from sqlalchemy import and_, delete, select, update
+from sqlalchemy import exc as SQLAlchemyExceptions
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import declared_attr
 
 ModelType = TypeVar("ModelType", bound=Base)
 

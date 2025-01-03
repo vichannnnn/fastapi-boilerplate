@@ -1,6 +1,8 @@
-from fastapi import APIRouter
-from app.tasks.health_check import ping as ping_task
 from typing import Dict
+
+from fastapi import APIRouter
+
+from app.tasks.health_check import ping as ping_task
 
 router = APIRouter()
 

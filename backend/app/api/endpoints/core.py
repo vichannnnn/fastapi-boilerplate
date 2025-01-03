@@ -1,13 +1,15 @@
 from typing import List, Sequence
-from fastapi import APIRouter, Response as FastAPIResponse
+
+from fastapi import APIRouter
+from fastapi import Response as FastAPIResponse
+
+from app.api.deps import CurrentSession
 from app.models.core import Book
 from app.schemas.core import (
     BookCreateSchema,
-    BookUpdateSchema,
     BookSchema,
+    BookUpdateSchema,
 )
-from app.api.deps import CurrentSession
-
 
 router = APIRouter()
 books_router = APIRouter()

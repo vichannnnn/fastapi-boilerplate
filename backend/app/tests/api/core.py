@@ -1,7 +1,8 @@
 from fastapi import status
-from fastapi.testclient import TestClient
-from app import schemas
 from fastapi.encoders import jsonable_encoder
+from fastapi.testclient import TestClient
+
+from app import schemas
 
 BOOK_URL = "/book"
 BOOKS_URL = "/books"

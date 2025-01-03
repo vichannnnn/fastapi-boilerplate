@@ -1,6 +1,7 @@
-from app.utils.worker import celery_app
 from typing import Any
+
 import requests
+from app.utils.worker import celery_app
 
 
 @celery_app.task(name="ping")  # type: ignore

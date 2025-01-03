@@ -1,24 +1,26 @@
-import jwt
 from typing import Optional
+
+import jwt
 from fastapi import Response as FastAPIResponse
+from sqlalchemy import Index, select, update
 from sqlalchemy import exc as SQLAlchemyExceptions
-from sqlalchemy import select, update, Index
-from sqlalchemy.orm import Mapped, mapped_column, synonym
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Mapped, mapped_column, synonym
 from sqlalchemy.sql.expression import text
+
 from app.crud.base import CRUD
 from app.db.base_class import Base
-from app.utils.auth import Authenticator, ALGORITHM, SECRET_KEY
-from app.utils.exceptions import AppError
 from app.schemas.auth import (
-    AccountRegisterSchema,
     AccountCreateSchema,
     AccountCredentialsSchema,
+    AccountRegisterSchema,
     AccountUpdatePasswordSchema,
     AuthSchema,
-    CurrentUserWithJWTSchema,
     CurrentUserSchema,
+    CurrentUserWithJWTSchema,
 )
+from app.utils.auth import ALGORITHM, SECRET_KEY, Authenticator
+from app.utils.exceptions import AppError
 
 
 class Account(Base, CRUD["Account"]):

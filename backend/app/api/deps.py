@@ -1,14 +1,15 @@
-from typing import AsyncGenerator, Generator
-from app.db.database import SessionLocal, async_session
-from app.schemas.auth import CurrentUserSchema
-from app.models.auth import Account
-from app.utils.auth import Authenticator, ALGORITHM, SECRET_KEY
-from app.utils.exceptions import AppError
+from typing import Annotated, AsyncGenerator, Generator
+
+from fastapi import Depends
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
-from typing import Annotated
-from fastapi import Depends
+
+from app.db.database import SessionLocal, async_session
+from app.models.auth import Account
+from app.schemas.auth import CurrentUserSchema
+from app.utils.auth import ALGORITHM, SECRET_KEY, Authenticator
+from app.utils.exceptions import AppError
 
 
 def get_db() -> Generator[Session, None, None]:

@@ -1,5 +1,6 @@
-from app.schemas.base import CustomBaseModel as BaseModel
 from typing import Optional
+
+from app.schemas.base import CustomBaseModel as BaseModel
 
 
 class BookCreateSchema(BaseModel):
