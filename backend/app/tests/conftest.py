@@ -12,7 +12,7 @@ from app import schemas
 from app.api.deps import get_current_user, get_session
 from app.db.base_class import Base
 from app.db.database import (
-    SQLALCHEMY_DATABASE_URL_WITHOUT_DB,
+    SQLALCHEMY_DATABASE_URL,
 )
 from app.db.database import (
     async_session as TestingSessionLocal,
@@ -30,7 +30,7 @@ def event_loop() -> AbstractEventLoop:
 
 @pytest.fixture(scope="session", autouse=True)
 async def create_test_database() -> AsyncGenerator[None, None]:
-    postgres_engine = create_async_engine(str(SQLALCHEMY_DATABASE_URL_WITHOUT_DB))
+    postgres_engine = create_async_engine(str(SQLALCHEMY_DATABASE_URL))
 
     async with postgres_engine.connect() as conn:
         await conn.execute(text("COMMIT"))
