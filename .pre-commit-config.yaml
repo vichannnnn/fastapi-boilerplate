@@ -1,15 +1,16 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
-    - id: trailing-whitespace
-    - id: end-of-file-fixer
-    - id: check-yaml
-    - id: check-added-large-files
-    - id: detect-private-key
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: detect-private-key
 
--   repo: https://github.com/psf/black
-    rev: 22.3.0
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: 'v3.6.0'
     hooks:
-        - id: black
-          exclude: ^dist/
+      - id: conventional-pre-commit
+        stages: [ commit-msg ]
+        args: [ ]
