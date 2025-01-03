@@ -1,0 +1,48 @@
+[project]
+name = "fastapi-boilerplate"
+version = "0.1.0"
+description = "Quick-start FastAPI Boilerplate for fast iteration."
+authors = [
+    {name = "Hima", email = "violet@himaa.me"},
+]
+
+dependencies = [
+    "alembic==1.14.0",
+    "asyncpg==0.30.0",
+    "fastapi==0.115.6",
+    "fastapi-pagination==0.12.5",
+    "passlib==1.7.4",
+    "python-dotenv==1.0.0",
+    "python-jose==3.3.0",
+    "python-multipart",
+    "pytest==7.4.0",
+    "pytest-asyncio==0.21.0",
+    "pydantic==2.10.4",
+    "pydantic[email]==2.10.4",
+    "PyJWT==2.8.0",
+    "uvicorn==0.27.0",
+    "sqlalchemy==2.0.36",
+    "httpx==0.26.0",
+    "requests==2.31.0",
+    "types-requests==2.31.0.1",
+    "mypy==1.8.0",
+    "ruff==0.2.0",
+    "sqlalchemy[mypy]",
+    "types-python-jose",
+    "types-passlib",
+    "coverage",
+    "celery==5.3.6",
+    "redis==5.0.6"
+]
+
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true

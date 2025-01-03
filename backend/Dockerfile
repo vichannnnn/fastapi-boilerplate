@@ -1,16 +1,25 @@
+FROM python:3.12-slim-bookworm AS builder
+
+RUN pip install -U pip setuptools wheel
+RUN pip install pdm
+
+COPY pyproject.toml pdm.lock README.md /pkgs/
+
+WORKDIR /pkgs
+
+RUN mkdir __pypackages__ && pdm install --prod --frozen-lockfile --no-editable
+
 FROM python:3.12-slim-bookworm
 
-WORKDIR ./app
+ENV PYTHONPATH=/pkgs
+COPY --from=builder /pkgs/__pypackages__/3.12/lib /pkgs
+COPY --from=builder /pkgs/__pypackages__/3.12/bin/* /bin/
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+COPY . /app
 
-RUN apt-get update && apt-get install -y build-essential libffi-dev
+WORKDIR /app
 
-COPY ./app/requirements.txt ./app/requirements.txt
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-RUN pip install types-Pygments types-colorama types-setuptools types-ujson
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir --default-timeout=100 -r ./app/requirements.txt
 
-COPY . .
+
