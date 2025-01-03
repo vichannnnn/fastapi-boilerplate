@@ -16,6 +16,7 @@ valid_password = Annotated[
     ),
 ]
 
+
 class AccountRegisterSchema(BaseModel):
     model_config = ConfigDict(regex_engine="python-re")
     username: valid_username  # type: ignore
